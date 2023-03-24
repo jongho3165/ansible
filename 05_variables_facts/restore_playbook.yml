@@ -1,0 +1,41 @@
+---
+- name: 서버 초기 상태 복구 작업
+  hosts: ansible1.example.com
+  gather_facts: yes
+  vars_files:
+    - vars/vars.yml
+  tasks:
+    - name: 1) 방화벽 서비스 내리기
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        immediate: yes
+        state: disabled
+      with_items:
+        - "{{ fw_http }}"
+        - "{{ fw_https }}"
+    - name: 2) 서비스 내리기
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items:
+        - "{{ svc_fw }}"
+        - "{{ svc_web }}"
+    - name: 3) secret 디렉토리 삭제
+      file:
+        path: "{{ secrets_dir }}"
+        state: absent
+    - name: 4) index.html 삭제
+      file:
+        path: "{{ web_root }}/index.html"
+        state: absent
+    - name: 5) .htaccess삭제
+      file:
+        path: "{{ web_root }}/.htaccess"
+        state: absent
+    - name: 6) 패키지 삭제
+      yum:
+        name:
+          - "{{ svc_fw }}"
+          - "{{ svc_web }}"
+        state: absent

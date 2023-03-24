@@ -1,0 +1,22 @@
+---
+- name: Restore playbook
+  hosts: all
+  tasks:
+    # /etc/motd (size => 0) 
+    - name: /etc/motd 파일 복원
+      shell: "> /etc/motd"
+
+    # DB 서비스 종료
+    - name: DB 서비스 종료
+      service:
+        name: mariadb
+        state: stopped
+        enabled: no
+
+    # DB 패키지 삭제
+    - name: DB 패키지 삭제
+      yum:
+        name:
+          - python3-PyMySQL
+          - mariadb-server
+        state: absent

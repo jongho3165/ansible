@@ -1,0 +1,49 @@
+---
+- name: DB Configuration
+  gather_facts: no
+  hosts: databases
+  vars:
+    db_packages:
+      - mariadb-server
+      - python3-PyMySQL
+    db_svc: mariadb
+    db_conf_src: http://ansible.example.com/my.cnf.standard
+    db_conf_dest: /etc/my.cnf
+  tasks:
+    # 1) DB Packages install
+    # 2) DB Service Start
+    # 3) DB Service Configure
+    # 4) Handler
+
+    - name: 1) DB Packages Install - mariadb-server, python3-PyMySQL
+      yum:
+        name: "{{ db_packages }}"
+        state: present
+      notify:
+        - set db password
+
+    - name: 2) DB Service Start
+      service:
+        name: "{{ db_svc }}"
+        state: started
+        enabled: 1
+
+    - name: DB Service Configuration - /etc/my.cnf
+      get_url:
+        url: "{{ db_conf_src }}"
+        dest: "{{ db_conf_dest }}"
+      notify:
+        - restart db service
+
+
+  handlers:
+    - name: restart db service
+      service:
+        name: "{{ db_src }}"
+        state: restarted
+        enabled: 1
+
+    - name: set db password
+      mysql_user:
+        name: root
+        password: soldesk1.

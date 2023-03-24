@@ -1,0 +1,24 @@
+---
+- name: Restore
+  hosts: all
+  tasks:
+    - name: Service disable - postfix
+      service:
+        name: postfix
+        state: stopped
+      tags: 
+        - server
+    
+    - name: Service disable - dovecot
+      service:
+        name: dovecot
+        state: stopped
+      tags:
+        - client
+
+
+    - name: Packages Remove
+      yum:
+        name: "{{ item }}"
+        state: absent
+      with_items: "{{ package }}"

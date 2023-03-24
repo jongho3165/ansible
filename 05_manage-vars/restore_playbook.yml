@@ -1,0 +1,12 @@
+---
+- name: Restore Packages
+  hosts: all
+  tasks:
+    - name: Restore package
+      yum: 
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - httpd
+        - mutt
+        - mariadb-server

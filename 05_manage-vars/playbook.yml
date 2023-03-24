@@ -1,0 +1,9 @@
+---
+- name: Install Packages
+  hosts: all
+  tasks:
+    - name: Install package - "{{ package }}"
+      yum: 
+        name: "{{ package }}"
+        state: latest
+  

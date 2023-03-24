@@ -1,0 +1,26 @@
+---
+- name: Install Package - postfix
+  yum:
+    name: postfix
+    state: present
+  tags: 
+    - server
+  notify: start_postfix
+
+
+- name: Install Package - dovecot
+  yum:
+    name: dovecot
+    state: present
+  tags:
+    - client
+  notify: start_dovecot
+
+- name: Get small config file
+  get_url:
+    url: "http://ansible.example.com/main.cf"
+    dest: "/etc/postfix/main.cf"
+  tags:
+    - server
+  notify: restart_postfix
+

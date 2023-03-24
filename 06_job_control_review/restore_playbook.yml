@@ -1,0 +1,26 @@
+---
+- name: Restore playbook.yml
+  hosts: webservers
+  vars_files: vars.yml
+  tasks:
+    - name: firewalld service disable
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        immediate: yes
+        state: disabled
+      with_items: "{{ fw_svcs }}"
+    - name: Service disable
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items: "{{ svc }}"
+    - name: Remove packages
+      yum:
+        name: "{{ item }}"
+        state: absent
+      with_items: "{{ packages }}"
+    - name: Remove index.html
+      file:
+        path: "{{ index_dest }}"
+        state: absent

@@ -1,0 +1,11 @@
+---
+- name: Install the {{ pkg_webs }}
+  yum:
+    name: "{{ pkg_webs }}"
+    state: latest
+  
+- name: Service Enabled - {{ svc_web }}
+  service:
+    name: "{{ svc_web }}"
+    state: started
+    enabled: yes

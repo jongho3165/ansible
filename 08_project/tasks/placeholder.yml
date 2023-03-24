@@ -1,0 +1,11 @@
+---
+- name: WEB Service Configuration - {{ indexfile }}
+  copy:
+    content: "{{ ansible_facts['fqdn']}} has been customized Ansible." 
+    dest: "{{ indexfile }}"
+
+
+- name: Make file - {{ motdfile }}
+  copy:
+    content: "Welcome to My Server - {{ ansible_facts['hostname'] }}"
+    dest: "{{ motdfile }}"

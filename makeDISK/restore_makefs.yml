@@ -1,0 +1,11 @@
+---
+- name: Restore Mount
+  hosts: fileserver
+  tasks: 
+    - name: 언마운트
+      mount:
+        path: "{{ item }}"
+        state: unmounted
+      with_items:
+        - /mnt/lv1
+        - /mnt/lv2

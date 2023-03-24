@@ -1,0 +1,33 @@
+---
+- name:
+  hosts: all
+  tasks:
+    - name: (1) 방화벽 서비스 내리기 - http, https
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        immediate: yes
+        state: disabled
+      loop:
+        - http
+        - https
+    - name: (2) 설정 파일 지우기
+      file:
+        path: /var/www/html/index.html
+        state: absent
+
+    - name: (3) 서비스 내리기
+      service:
+        name: "{{ item }}"
+        state: stopped
+      loop:
+          - httpd
+          - firewalld
+    - name: (4) 패키지 삭제
+      yum:
+        name: "{{ item }}"
+        state: absent
+      loop:
+          - firewalld
+          - httpd
+          - mod_ssl

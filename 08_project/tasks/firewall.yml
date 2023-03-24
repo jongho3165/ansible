@@ -1,0 +1,18 @@
+---
+- name: Install the {{ pkg_fw }}
+  yum:
+    name: "{{ pkg_fw }}"
+    state: latest
+
+- name: Service Enabled {{ pkg_fw }}
+  service:
+    name: firewalld
+    state: started
+
+- name: Add Service {{ fw_webs }}
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_items: "{{ fw_webs }}"

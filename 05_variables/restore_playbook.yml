@@ -1,0 +1,40 @@
+---
+- name: Restore playbook.yml
+  hosts: webserver
+  vars_files: vars/vars.yml 
+  tasks:
+    # 1) 방화벽 해제 - httpd, mod_ssl, python3-MySQL, firewalld
+    - name: 1) 방화벽 해제
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        immediate: yes
+        state: disabled
+      loop:
+        - "{{ fw_http }}"
+        - "{{ fw_https }}"
+      ignore_errors: yes
+    # 2) 서비스 다운 
+    - name: 2) 서비스 다운
+      service:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+      loop:
+        - "{{ svc_web }}"
+        - "{{ svc_fw }}"
+    # 3) 서비스 설정
+    - name: 3) index 파일 삭제
+      file:
+        path: /var/www/html/index.html
+        state: absent
+    # 4) 패키지 삭제 - http, https
+    - name: 4) 패키지 삭제
+      yum:
+        name:
+          - "{{ pkg_http }}"
+          - "{{ pkg_https }}"
+          - "{{ pkg_fw }}"
+          - "{{ pkg_python }}"
+        state: absent

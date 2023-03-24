@@ -1,0 +1,18 @@
+---
+- name: Virtual Hosting Role
+  hosts: webservers
+  
+  pre_tasks:
+    - name: pre_tasks message
+      debug: 
+        msg: '===== START: WEB Server Configuration ====='
+
+
+  roles:
+    - myvhost
+
+
+  post_tasks:
+    - name: post tasks message
+      debug: 
+        msg: '===== STOP: WEB Server Configuration ====='

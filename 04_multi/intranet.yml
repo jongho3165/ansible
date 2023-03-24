@@ -1,0 +1,41 @@
+---
+- name: 1st play
+  hosts: web1
+  tasks:
+    - name: 1) Install the package - httpd, mod_ssl, firewalld
+      yum: 
+        name: 
+          - httpd
+          - mod_ssl
+          - firewalld
+        state: latest
+    - name: 2) Configure web server
+      copy:
+        content: "Welcome to my Server\n"
+        dest: /var/www/html/index.html
+    - name: 3) Start the service - httpd, firewalld
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: 1
+      loop:
+        - httpd
+        - firewalld
+    - name: 4) Open the firewall ports with http, https
+      firewalld:
+        service: "{{ item }}"
+        permanent: 1
+        immediate: 1
+        state: enabled
+      loop:
+        - http
+        - https
+
+- name: 2st play
+  hosts: localhost
+  tasks:
+    - name: Test the WEB page
+      uri:
+        url: http://web1.example.com
+        return_content: yes
+        status_code: 200

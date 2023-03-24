@@ -1,0 +1,19 @@
+---
+- name: Restaore all playbook
+  hosts: all
+  vars:
+    mariadb_packages:
+      - mariadb-server
+      - python3-PyMySQL
+    mariadb_service: mariadb
+  tasks:
+    - name: Service disable
+      service:
+        name: "{{ mariadb_service }}"
+        state: stopped
+        enabled: no
+
+    - name: Remove packages
+      yum:
+        name: "{{ mariadb_packages }}"
+        state: absent
